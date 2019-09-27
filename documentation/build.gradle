@@ -1,0 +1,46 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'org.jetbrains.dokka-android'
+
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+
+    buildTypes {
+        // ドキュメント用のビルドタイプを定義する。これをしないとappモジュールからライブラリのコードをうまく解決できない。
+        docs {}
+    }
+
+    sourceSets {
+        // ドキュメント生成対象のコードをソースセットに追加する
+        docs.java.srcDirs += '../lib1/src/main/java'
+        docs.java.srcDirs += '../lib2/src/main/java'
+    }
+
+}
+
+dokka {
+    outputFormat = 'javadoc'
+    sourceDirs = files('src/main')
+    outputDirectory = "$project.rootDir/docs"
+    linkMapping {
+        // Unix based directory relative path to the root of the project (where you execute gradle respectively).
+        dir = "src/main/kotlin" // or simply "./"
+
+        // URL showing where the source code can be accessed through the web browser
+        url = "https://github.com/cy6erGn0m/vertx3-lang-kotlin/blob/master/src/main/kotlin"
+        //remove src/main/kotlin if you use "./" above
+
+        // Suffix which is used to append the line number to the URL. Use #L for GitHub
+        suffix = "#L"
+    }
+}
